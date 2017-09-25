@@ -19,6 +19,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">Upload File</div>
 	<div class="col-sm-10 col-xs-12">
 		<form class="panel panel-default" role="form" method="post" action="{config.relative_path}/asset-manager/upload">
+      <input id="csrf_token" type="hidden" value="{csrf}" />
 			<div class="panel-body">
 				<div class="form-group">
 					<label for="upload">Upload new file</label>

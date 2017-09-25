@@ -15,7 +15,7 @@ var path = require('path'),
 	plugin = {
 		ready: false,
 		settings: {
-			storage: path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'asset-manager')
+			storage: path.join(nconf.get('upload_path'), 'asset-manager')
 		}
 	};
 
@@ -34,8 +34,8 @@ plugin.init = function(params, callback) {
 		SocketMethods = require('./websockets');
 	SocketPlugins['asset-manager'] = SocketMethods;
 		
-	router.get('/admin/plugins/asset-manager', hostMiddleware.admin.buildHeader, controllers.renderAdminPage);
-	router.get('/api/admin/plugins/asset-manager', controllers.renderAdminPage);
+	router.get('/admin/plugins/asset-manager', hostMiddleware.admin.buildHeader, hostMiddleware.applyCSRF, controllers.renderAdminPage);
+	router.get('/api/admin/plugins/asset-manager', hostMiddleware.applyCSRF, controllers.renderAdminPage);
 
 	router.get('/assets', hostMiddleware.buildHeader, controllers.listAssets);
 	router.get('/api/assets', controllers.listAssets);
@@ -121,9 +121,9 @@ plugin.processUpload = function(files, callback) {
 			},
 			function(next) {
 				// Save meta data into database
-				console.log(fileObj);
+				//console.log(fileObj);
 				db.setObject('asset-manager:file:' + uuid, {
-					name: fileObj.meta.name,
+					name: fileObj.meta.name || fileObj.originalFilename,
 					description: fileObj.meta.description,
 					path: targetPath,
 					size: fileObj.size,
